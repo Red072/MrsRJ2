@@ -1,19 +1,22 @@
 ﻿using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace SupanthaPaul
 {
 	public class PlayerController : MonoBehaviour
 	{
-        [SerializeField] private GameObject joeyright;
-        [SerializeField] private GameObject joeyleft;
+		//joey vars
+		[SerializeField] private GameObject joeyright;
+		[SerializeField] private GameObject joeyleft;
 
-        [SerializeField] private Transform JoeySpawnPos;
+		[SerializeField] private Transform JoeySpawnPos;
+		private bool canThrowJoe = true;
 
-
-        [SerializeField] private float speed;
+		[SerializeField] private float speed;
 		[Header("Jumping")]
 		[SerializeField] private float jumpForce;
-		[SerializeField] private float fallMultiplier;
+        [SerializeField] private float bounceForce;
+        [SerializeField] private float fallMultiplier;
 		[SerializeField] private Transform groundCheck;
 		[SerializeField] private float groundCheckRadius;
 		[SerializeField] private LayerMask whatIsGround;
@@ -94,7 +97,7 @@ namespace SupanthaPaul
 			var position = transform.position;
 			// check if on wall
 			m_onWall = Physics2D.OverlapCircle((Vector2)position + grabRightOffset, grabCheckRadius, whatIsGround)
-			          || Physics2D.OverlapCircle((Vector2)position + grabLeftOffset, grabCheckRadius, whatIsGround);
+					  || Physics2D.OverlapCircle((Vector2)position + grabLeftOffset, grabCheckRadius, whatIsGround);
 			m_onRightWall = Physics2D.OverlapCircle((Vector2)position + grabRightOffset, grabCheckRadius, whatIsGround);
 			m_onLeftWall = Physics2D.OverlapCircle((Vector2)position + grabLeftOffset, grabCheckRadius, whatIsGround);
 
@@ -109,15 +112,15 @@ namespace SupanthaPaul
 			if (isCurrentlyPlayable)
 			{
 				// horizontal movement
-				if(m_wallJumping)
+				if (m_wallJumping)
 				{
 					m_rb.velocity = Vector2.Lerp(m_rb.velocity, (new Vector2(moveInput * speed, m_rb.velocity.y)), 1.5f * Time.fixedDeltaTime);
 				}
 				else
 				{
-					if(canMove && !m_wallGrabbing)
+					if (canMove && !m_wallGrabbing)
 						m_rb.velocity = new Vector2(moveInput * speed, m_rb.velocity.y);
-					else if(!canMove)
+					else if (!canMove)
 						m_rb.velocity = new Vector2(0f, m_rb.velocity.y);
 				}
 				// better jump physics
@@ -171,11 +174,11 @@ namespace SupanthaPaul
 
 				// enable/disable dust particles
 				float playerVelocityMag = m_rb.velocity.sqrMagnitude;
-				if(m_dustParticle.isPlaying && playerVelocityMag == 0f)
+				if (m_dustParticle.isPlaying && playerVelocityMag == 0f)
 				{
 					m_dustParticle.Stop();
 				}
-				else if(!m_dustParticle.isPlaying && playerVelocityMag > 0f)
+				else if (!m_dustParticle.isPlaying && playerVelocityMag > 0f)
 				{
 					m_dustParticle.Play();
 				}
@@ -187,14 +190,27 @@ namespace SupanthaPaul
 		{
 
 
-            if (Input.GetButtonDown("Fire1") && m_facingRight)
-            {
-                Instantiate(joeyright, transform.position, transform.rotation);
+           
 
-            }
-            if (Input.GetButtonDown("Fire1") && !m_facingRight)
-            {
-                Instantiate(joeyleft, transform.position, transform.rotation);
+            if (Input.GetButtonDown("Fire1") && m_facingRight && canThrowJoe)
+			{
+				canThrowJoe = false;
+
+
+				Instantiate(joeyright, transform.position, transform.rotation);
+
+
+				Invoke("JoeyCoolDown",1);
+
+			}
+			if (Input.GetButtonDown("Fire1") && !m_facingRight && canThrowJoe)
+			{
+				canThrowJoe = false;
+
+
+				Instantiate(joeyleft, transform.position, transform.rotation);
+
+                Invoke("JoeyCoolDown", 1);
 
             }
 
@@ -223,7 +239,7 @@ namespace SupanthaPaul
 					// dash effect
 					PoolManager.instance.ReuseObject(dashEffect, transform.position, Quaternion.identity);
 					// if player in air while dashing
-					if(!isGrounded)
+					if (!isGrounded)
 					{
 						m_hasDashedInAir = true;
 					}
@@ -231,26 +247,26 @@ namespace SupanthaPaul
 				}
 			}
 			m_dashCooldown -= Time.deltaTime;
-			
+
 			// if has dashed in air once but now grounded
 			if (m_hasDashedInAir && isGrounded)
 				m_hasDashedInAir = false;
-			
+
 			// Jumping
-			if(InputSystem.Jump() && m_extraJumps > 0 && !isGrounded && !m_wallGrabbing)	// extra jumping
+			if (InputSystem.Jump() && m_extraJumps > 0 && !isGrounded && !m_wallGrabbing)   // extra jumping
 			{
 				m_rb.velocity = new Vector2(m_rb.velocity.x, m_extraJumpForce); ;
 				m_extraJumps--;
 				// jumpEffect
 				PoolManager.instance.ReuseObject(jumpEffect, groundCheck.position, Quaternion.identity);
 			}
-			else if(InputSystem.Jump() && (isGrounded || m_groundedRemember > 0f))	// normal single jumping
+			else if (InputSystem.Jump() && (isGrounded || m_groundedRemember > 0f)) // normal single jumping
 			{
 				m_rb.velocity = new Vector2(m_rb.velocity.x, jumpForce);
 				// jumpEffect
 				PoolManager.instance.ReuseObject(jumpEffect, groundCheck.position, Quaternion.identity);
 			}
-			else if(InputSystem.Jump() && m_wallGrabbing && moveInput!=m_onWallSide )		// wall jumping off the wall
+			else if (InputSystem.Jump() && m_wallGrabbing && moveInput != m_onWallSide)     // wall jumping off the wall
 			{
 				m_wallGrabbing = false;
 				m_wallJumping = true;
@@ -259,7 +275,7 @@ namespace SupanthaPaul
 					Flip();
 				m_rb.AddForce(new Vector2(-m_onWallSide * wallJumpForce.x, wallJumpForce.y), ForceMode2D.Impulse);
 			}
-			else if(InputSystem.Jump() && m_wallGrabbing && moveInput != 0 && (moveInput == m_onWallSide))      // wall climbing jump
+			else if (InputSystem.Jump() && m_wallGrabbing && moveInput != 0 && (moveInput == m_onWallSide))      // wall climbing jump
 			{
 				m_wallGrabbing = false;
 				m_wallJumping = true;
@@ -277,7 +293,7 @@ namespace SupanthaPaul
 			Vector3 scale = transform.localScale;
 			scale.x *= -1;
 			transform.localScale = scale;
-        }
+		}
 
 		void CalculateSides()
 		{
@@ -301,5 +317,44 @@ namespace SupanthaPaul
 			Gizmos.DrawWireSphere((Vector2)transform.position + grabRightOffset, grabCheckRadius);
 			Gizmos.DrawWireSphere((Vector2)transform.position + grabLeftOffset, grabCheckRadius);
 		}
-	}
+
+
+		private void JoeyCoolDown()
+		{
+			canThrowJoe = true;
+		}
+
+
+		private void OnCollisionEnter2D(Collision2D collision)
+		{
+			if(collision.gameObject.CompareTag("ENEMY"))
+			{
+				Destroy(gameObject);
+
+                SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+
+            }
+        }
+
+
+		private void OnTriggerEnter2D(Collider2D collision)
+		{
+            if (collision.gameObject.CompareTag("ENEMY"))
+            {
+                Destroy(gameObject);
+
+                SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+
+            }
+
+
+           
+            if (collision.gameObject.CompareTag("Bouncy"))
+            {
+                m_rb.velocity = new Vector2(m_rb.velocity.x, bounceForce);
+
+            }
+        }
+
+    }
 }

@@ -6,8 +6,11 @@ TagManager:
   tags:
   - Interactible
   - Ground
+  - EBound
+  - ENEMY
+  - Joey
   - Timed_Platform
-  - False_Platform
+  - Bouncy
   layers:
   - Default
   - TransparentFX
@@ -42,9 +45,15 @@ TagManager:
   - 
   - 
   m_SortingLayers:
+  - name: background
+    uniqueID: 4132936485
+    locked: 0
   - name: Default
     uniqueID: 0
     locked: 0
   - name: New Layer
     uniqueID: 1802038029
+    locked: 0
+  - name: Frontmost
+    uniqueID: 2329571547
     locked: 0

@@ -28,4 +28,7 @@ public class JoeyMovement : MonoBehaviour
     {
         Destroy(gameObject);
     }
+
+    
+
 }
