@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 54ba462a76d9da34fb0a79573af1bb54
+guid: d5c47ca963babfc489d2c287dba788b1
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -4782971254517240118
-    second: backgroundproj_0
+      213: -6353369635915134050
+    second: redfox2_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,13 +100,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: backgroundproj_0
+      name: redfox2_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 1536
-        height: 4000
+        width: 531
+        height: 231
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -114,8 +114,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: ace689b3cf87f9db0800000000000000
-      internalID: -4782971254517240118
+      spriteID: e9b868c4afb44d7a0800000000000000
+      internalID: -6353369635915134050
       vertices: []
       indices: 
       edges: []
@@ -131,7 +131,7 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      backgroundproj_0: -4782971254517240118
+      redfox2_0: -6353369635915134050
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

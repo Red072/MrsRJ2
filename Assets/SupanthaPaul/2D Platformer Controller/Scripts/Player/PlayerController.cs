@@ -5,8 +5,14 @@ namespace SupanthaPaul
 {
 	public class PlayerController : MonoBehaviour
 	{
-		//joey vars
-		[SerializeField] private GameObject joeyright;
+
+
+        //sound vars
+        [SerializeField] private AudioSource sfx;
+        [SerializeField] private AudioClip jumpSFX, throwSFX;
+
+        //joey vars
+        [SerializeField] private GameObject joeyright;
 		[SerializeField] private GameObject joeyleft;
 
 		[SerializeField] private Transform JoeySpawnPos;
@@ -88,7 +94,12 @@ namespace SupanthaPaul
 
 			m_rb = GetComponent<Rigidbody2D>();
 			m_dustParticle = GetComponentInChildren<ParticleSystem>();
-		}
+
+
+            //dav code
+            //fixinginputs on startup
+            Pause.isPaused = false;
+        }
 
 		private void FixedUpdate()
 		{
@@ -190,41 +201,72 @@ namespace SupanthaPaul
 		{
 
 
-           
-
-            if (Input.GetButtonDown("Fire1") && m_facingRight && canThrowJoe)
+           if(!Pause.isPaused)
 			{
-				canThrowJoe = false;
+                if (Input.GetButtonDown("Fire1") && m_facingRight && canThrowJoe)
+                {
+                    canThrowJoe = false;
 
 
-				Instantiate(joeyright, transform.position, transform.rotation);
+                    Instantiate(joeyright, transform.position, transform.rotation);
 
 
-				Invoke("JoeyCoolDown",1);
+                    Invoke("JoeyCoolDown", 1);
 
-			}
-			if (Input.GetButtonDown("Fire1") && !m_facingRight && canThrowJoe)
-			{
-				canThrowJoe = false;
+                    sfx.clip = throwSFX;
+                    sfx.Play();
+
+                }
+                if (Input.GetButtonDown("Fire1") && !m_facingRight && canThrowJoe)
+                {
+                    canThrowJoe = false;
 
 
-				Instantiate(joeyleft, transform.position, transform.rotation);
+                    Instantiate(joeyleft, transform.position, transform.rotation);
 
-                Invoke("JoeyCoolDown", 1);
+                    Invoke("JoeyCoolDown", 1);
 
+
+                    sfx.clip = throwSFX;
+                    sfx.Play();
+
+
+                }
+
+                // Jumping
+                if (InputSystem.Jump() && m_extraJumps > 0 && !isGrounded && !m_wallGrabbing)   // extra jumping
+                {
+                    m_rb.velocity = new Vector2(m_rb.velocity.x, m_extraJumpForce); ;
+                    m_extraJumps--;
+                    // jumpEffect
+                    PoolManager.instance.ReuseObject(jumpEffect, groundCheck.position, Quaternion.identity);
+
+                    sfx.clip = jumpSFX;
+                    sfx.Play();
+                }
+                else if (InputSystem.Jump() && (isGrounded || m_groundedRemember > 0f)) // normal single jumping
+                {
+                    m_rb.velocity = new Vector2(m_rb.velocity.x, jumpForce);
+                    // jumpEffect
+                    PoolManager.instance.ReuseObject(jumpEffect, groundCheck.position, Quaternion.identity);
+
+                    sfx.clip = jumpSFX;
+                    sfx.Play();
+                }
             }
 
 
             // horizontal input
             moveInput = InputSystem.HorizontalRaw();
 
-			if (isGrounded)
-			{
-				m_extraJumps = extraJumpCount;
-			}
+            if (isGrounded)
+            {
+                m_extraJumps = extraJumpCount;
+            }
 
-			// grounded remember offset (for more responsive jump)
-			m_groundedRemember -= Time.deltaTime;
+
+            // grounded remember offset (for more responsive jump)
+            m_groundedRemember -= Time.deltaTime;
 			if (isGrounded)
 				m_groundedRemember = m_groundedRememberTime;
 
@@ -252,20 +294,7 @@ namespace SupanthaPaul
 			if (m_hasDashedInAir && isGrounded)
 				m_hasDashedInAir = false;
 
-			// Jumping
-			if (InputSystem.Jump() && m_extraJumps > 0 && !isGrounded && !m_wallGrabbing)   // extra jumping
-			{
-				m_rb.velocity = new Vector2(m_rb.velocity.x, m_extraJumpForce); ;
-				m_extraJumps--;
-				// jumpEffect
-				PoolManager.instance.ReuseObject(jumpEffect, groundCheck.position, Quaternion.identity);
-			}
-			else if (InputSystem.Jump() && (isGrounded || m_groundedRemember > 0f)) // normal single jumping
-			{
-				m_rb.velocity = new Vector2(m_rb.velocity.x, jumpForce);
-				// jumpEffect
-				PoolManager.instance.ReuseObject(jumpEffect, groundCheck.position, Quaternion.identity);
-			}
+			
 			else if (InputSystem.Jump() && m_wallGrabbing && moveInput != m_onWallSide)     // wall jumping off the wall
 			{
 				m_wallGrabbing = false;
