@@ -10,7 +10,7 @@
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <RootNamespace></RootNamespace>
-    <ProjectGuid>{872E9FC8-0B61-7648-0623-4CFA8493E978}</ProjectGuid>
+    <ProjectGuid>{6A1370C0-D616-0AAF-67BE-70A8AC3127FB}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <AssemblyName>Assembly-CSharp</AssemblyName>
@@ -66,13 +66,14 @@
     <Compile Include="Assets\SupanthaPaul\2D Platformer Controller\Scripts\Player\PlayerAnimator.cs" />
     <Compile Include="Assets\JoeyMovement.cs" />
     <Compile Include="Assets\Settings.cs" />
+    <Compile Include="Assets\MovingPlatform.cs" />
     <Compile Include="Assets\SpikeMovement.cs" />
     <Compile Include="Assets\EnemyMovement.cs" />
     <Compile Include="Assets\SupanthaPaul\2D Platformer Controller\Scripts\ObjectPooling\PoolManager.cs" />
     <Compile Include="Assets\SupanthaPaul\2D Platformer Controller\Scripts\Player\PlayerController.cs" />
     <Compile Include="Assets\SupanthaPaul\2D Platformer Controller\Scripts\ObjectPooling\PoolObject.cs" />
     <Compile Include="Assets\JoeyMovLeft.cs" />
-    <Compile Include="Assets\SupanthaPaul\2D Platformer Controller\Scripts\MovingPlatform.cs" />
+    <Compile Include="Assets\Ending.cs" />
     <Compile Include="Assets\SupanthaPaul\2D Platformer Controller\Scripts\ObjectPooling\PoolObjects\ParticlePoolObject.cs" />
     <Compile Include="Assets\SupanthaPaul\2D Platformer Controller\Scripts\Camera\CameraFollow.cs" />
   </ItemGroup>

@@ -11,6 +11,7 @@ TagManager:
   - Joey
   - Timed_Platform
   - Bouncy
+  - End
   layers:
   - Default
   - TransparentFX
@@ -45,14 +46,26 @@ TagManager:
   - 
   - 
   m_SortingLayers:
+  - name: BackestGroundest
+    uniqueID: 2430044021
+    locked: 0
+  - name: BackestGround
+    uniqueID: 2189403551
+    locked: 0
   - name: background
     uniqueID: 4132936485
     locked: 0
   - name: Default
     uniqueID: 0
     locked: 0
-  - name: New Layer
+  - name: Enemies
+    uniqueID: 3306878821
+    locked: 0
+  - name: Platforms
     uniqueID: 1802038029
+    locked: 0
+  - name: Player
+    uniqueID: 1866256707
     locked: 0
   - name: Frontmost
     uniqueID: 2329571547
